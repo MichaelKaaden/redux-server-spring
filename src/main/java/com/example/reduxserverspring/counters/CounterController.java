@@ -1,4 +1,4 @@
-package com.example.reduxserverspring.counter;
+package com.example.reduxserverspring.counters;
 
 import jakarta.validation.constraints.Min;
 import org.slf4j.Logger;
@@ -14,9 +14,9 @@ public class CounterController {
 
     Logger logger = LoggerFactory.getLogger(CounterController.class);
 
-    @GetMapping("/counter/{index}")
+    @GetMapping("/counters/{index}")
     public Counter getCounter(@PathVariable("index") @Min(0) int index) {
-        logger.info(String.format("index is %d", index));
-        return new Counter(index, 43);
+        logger.info("index is {}", index);
+        return new Counter(index, 42);
     }
 }
