@@ -2,6 +2,8 @@ package com.example.reduxserverspring.counters;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,16 +24,6 @@ public class CountersService {
     }
 
     /**
-     * Retrieve the given counter's value.
-     *
-     * @param index The counter's index
-     * @return The counter's value
-     */
-    public int getCounter(int index) {
-        return getOrInitializeValue(index).get();
-    }
-
-    /**
      * Retrieve the given counter's value. If it doesn't exist yet,
      * it's atomically created first.
      *
@@ -42,6 +34,23 @@ public class CountersService {
         countersMap.putIfAbsent(index, new AtomicInteger(0));
         return countersMap.get(index);
     }
+
+    public List<Counter> getCounters() {
+        List<Counter> result = new ArrayList<>();
+        countersMap.forEach((key, value) -> result.add(new Counter(key, value.get())));
+        return result;
+    }
+
+    /**
+     * Retrieve the given counter's value.
+     *
+     * @param index The counter's index
+     * @return The counter's value
+     */
+    public int getCounter(int index) {
+        return getOrInitializeValue(index).get();
+    }
+
 
     /**
      * Increment the given counter's value. If it doesn't exist yet,

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @Validated
 public class CountersController {
@@ -17,6 +19,12 @@ public class CountersController {
 
     CountersController(CountersService countersService) {
         this.countersService = countersService;
+    }
+
+    @GetMapping("/counters")
+    public List<Counter> getCounters() {
+        logger.info("getting all counters");
+        return countersService.getCounters();
     }
 
     @GetMapping("/counters/{index}")
