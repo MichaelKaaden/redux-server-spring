@@ -10,13 +10,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
-public class CounterController {
+public class CountersController {
+    CountersService countersService;
+    Logger logger = LoggerFactory.getLogger(CountersController.class);
 
-    Logger logger = LoggerFactory.getLogger(CounterController.class);
+    CountersController(CountersService countersService) {
+        this.countersService = countersService;
+    }
 
     @GetMapping("/counters/{index}")
     public Counter getCounter(@PathVariable("index") @Min(0) int index) {
         logger.info("index is {}", index);
-        return new Counter(index, 42);
+        final int value = countersService.getCounter(index);
+        return new Counter(index, value);
     }
 }
