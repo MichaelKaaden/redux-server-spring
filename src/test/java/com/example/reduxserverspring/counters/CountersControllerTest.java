@@ -8,10 +8,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -43,7 +45,7 @@ class CountersControllerTest {
 
     @Test
     void testGetCounter() throws Exception {
-        given(this.countersService.getCounter(1)).willReturn(10);
+        given(this.countersService.getCounter(anyInt())).willReturn(10);
         this.mockMvc.perform(MockMvcRequestBuilders.get("/counters/1"))
 //                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
@@ -59,18 +61,115 @@ class CountersControllerTest {
         assertThrows(ServletException.class, () -> {
             this.mockMvc.perform(MockMvcRequestBuilders.get("/counters/-1"));
         });
-
     }
 
     @Test
-    void testPutCounter() {
+    void testPutCounter() throws Exception {
+        given(this.countersService.setCounter(anyInt(), anyInt())).willReturn(11);
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/counters/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"count\": 10 }")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("okay"))
+                .andExpect(jsonPath("$.data.counter.index").value(1))
+                .andExpect(jsonPath("$.data.counter.value").value(11));
     }
 
     @Test
-    void testDecrementCounter() {
+    void testPutCounterWithInvalidIndex() throws Exception {
+        assertThrows(ServletException.class, () -> {
+            this.mockMvc.perform(MockMvcRequestBuilders
+                    .put("/counters/-1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{ \"count\": 10 }")
+            );
+        });
     }
 
     @Test
-    void testIncrementCounter() {
+    void testPutCounterWithInvalidCount() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .put("/counters/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"count\": -1 }")
+        ).andExpect(status().isBadRequest()); // TODO I had expected an Exception like above
+    }
+
+    @Test
+    void testDecrementCounter() throws Exception {
+        given(this.countersService.decrementByValue(anyInt(), anyInt())).willReturn(1);
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/counters/1/decrement")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"by\": 1 }")
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("okay"))
+                .andExpect(jsonPath("$.data.counter.index").value(1))
+                .andExpect(jsonPath("$.data.counter.value").value(1));
+    }
+
+    @Test
+    void testDecrementCounterWithInvalidIndex() throws Exception {
+        assertThrows(ServletException.class, () -> {
+            this.mockMvc.perform(MockMvcRequestBuilders
+                    .put("/counters/-1/decrement")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{ \"by\": 10 }")
+            );
+        });
+    }
+
+    @Test
+    void testDecrementCounterWithInvalidCount() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .put("/counters/1/decrement")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"by\": -1 }")
+        ).andExpect(status().isBadRequest()); // TODO I had expected an Exception like above
+    }
+
+    @Test
+    void testIncrementCounter() throws Exception {
+        given(this.countersService.incrementByValue(anyInt(), anyInt())).willReturn(1);
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/counters/1/increment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"by\": 1 }")
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("okay"))
+                .andExpect(jsonPath("$.data.counter.index").value(1))
+                .andExpect(jsonPath("$.data.counter.value").value(1));
+    }
+
+    @Test
+    void testIncrementCounterWithInvalidIndex() throws Exception {
+        assertThrows(ServletException.class, () -> {
+            this.mockMvc.perform(MockMvcRequestBuilders
+                    .put("/counters/-1/increment")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{ \"by\": 10 }")
+            );
+        });
+    }
+
+    @Test
+    void testInrementCounterWithInvalidCount() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders
+                .put("/counters/1/increment")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"by\": -1 }")
+        ).andExpect(status().isBadRequest()); // TODO I had expected an Exception like above
     }
 }
