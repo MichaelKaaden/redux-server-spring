@@ -19,6 +19,13 @@ class CountersServiceTest {
     }
 
     @Test
+    void setCounter() {
+        assertSame(0, countersService.getCounter(42));
+        countersService.setCounter(42, 12);
+        assertSame(12, countersService.getCounter(42));
+    }
+
+    @Test
     void increment() {
         assertSame(0, countersService.getCounter(42));
         countersService.increment(42);

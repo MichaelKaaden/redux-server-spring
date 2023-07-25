@@ -51,6 +51,17 @@ public class CountersService {
         return getOrInitializeValue(index).get();
     }
 
+    /**
+     * Set the given counter's value.
+     *
+     * @param index The counter's index
+     * @param count The counter's value
+     * @return The counter's value
+     */
+    public int setCounter(int index, int count) {
+        countersMap.put(index, new AtomicInteger(count));
+        return countersMap.get(index).get();
+    }
 
     /**
      * Increment the given counter's value. If it doesn't exist yet,

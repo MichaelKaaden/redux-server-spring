@@ -31,6 +31,14 @@ public class CountersController {
         return new JsonCounter(new CounterDto(new Counter(index, value)));
     }
 
+    @PutMapping("/counters/{index}")
+    public JsonCounter putCounter(@PathVariable("index") @Min(0) int index,
+                                  @Valid @RequestBody PutCounterDto countData) {
+        logger.info("setting counter with index {} to value {}", index, countData.count());
+        final int value = countersService.setCounter(index, countData.count());
+        return new JsonCounter(new CounterDto(new Counter(index, value)));
+    }
+
     @PutMapping("/counters/{index}/decrement")
     public JsonCounter decrementCounter(@PathVariable("index") @Min(0) int index,
                                         @Valid @RequestBody DecIncCounterDto decData) {
