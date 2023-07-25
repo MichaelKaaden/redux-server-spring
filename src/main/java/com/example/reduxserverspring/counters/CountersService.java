@@ -60,7 +60,11 @@ public class CountersService {
      * @return The counter's value
      */
     public int increment(int index) {
-        return getOrInitializeValue(index).incrementAndGet();
+        return incrementByValue(index, 1);
+    }
+
+    public int incrementByValue(int index, int value) {
+        return getOrInitializeValue(index).addAndGet(value);
     }
 
     /**
@@ -71,6 +75,10 @@ public class CountersService {
      * @return The counter's value
      */
     public int decrement(int index) {
-        return getOrInitializeValue(index).decrementAndGet();
+        return decrementByValue(index, 1);
+    }
+
+    public int decrementByValue(int index, int value) {
+        return getOrInitializeValue(index).addAndGet(-value);
     }
 }

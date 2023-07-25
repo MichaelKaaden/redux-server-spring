@@ -1,17 +1,12 @@
 package com.example.reduxserverspring.counters;
 
-import com.example.reduxserverspring.counters.dto.CounterDto;
-import com.example.reduxserverspring.counters.dto.CountersDto;
-import com.example.reduxserverspring.counters.dto.JsonCounter;
-import com.example.reduxserverspring.counters.dto.JsonCounters;
+import com.example.reduxserverspring.counters.dto.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Validated
@@ -37,16 +32,18 @@ public class CountersController {
     }
 
     @PutMapping("/counters/{index}/decrement")
-    public JsonCounter decrementCounter(@PathVariable("index") @Min(0) int index) {
-        logger.info("decrementing counter with index {}", index);
-        final int value = countersService.decrement(index);
+    public JsonCounter decrementCounter(@PathVariable("index") @Min(0) int index,
+                                        @Valid @RequestBody DecIncCounterDto decData) {
+        logger.info("decrementing counter with index {} by {}", index, decData.by());
+        final int value = countersService.decrementByValue(index, decData.by());
         return new JsonCounter(new CounterDto(new Counter(index, value)));
     }
 
     @PutMapping("/counters/{index}/increment")
-    public JsonCounter incrementCounter(@PathVariable("index") @Min(0) int index) {
-        logger.info("incrementing counter with index {}", index);
-        final int value = countersService.increment(index);
+    public JsonCounter incrementCounter(@PathVariable("index") @Min(0) int index,
+                                        @Valid @RequestBody DecIncCounterDto incData) {
+        logger.info("incrementing counter with index {} by {}", index, incData.by());
+        final int value = countersService.incrementByValue(index, incData.by());
         return new JsonCounter(new CounterDto(new Counter(index, value)));
     }
 }

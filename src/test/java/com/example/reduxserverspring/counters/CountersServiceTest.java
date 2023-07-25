@@ -28,11 +28,29 @@ class CountersServiceTest {
     }
 
     @Test
+    void incrementByValue() {
+        assertSame(0, countersService.getCounter(42));
+        countersService.incrementByValue(42, 3);
+        assertSame(3, countersService.getCounter(42));
+        countersService.incrementByValue(42, 3);
+        assertSame(6, countersService.getCounter(42));
+    }
+
+    @Test
     void decrement() {
         assertSame(0, countersService.getCounter(42));
         countersService.decrement(42);
         assertSame(-1, countersService.getCounter(42));
         countersService.decrement(42);
         assertSame(-2, countersService.getCounter(42));
+    }
+
+    @Test
+    void decrementByValue() {
+        assertSame(0, countersService.getCounter(42));
+        countersService.decrementByValue(42, 3);
+        assertSame(-3, countersService.getCounter(42));
+        countersService.decrementByValue(42, 3);
+        assertSame(-6, countersService.getCounter(42));
     }
 }
