@@ -1,4 +1,6 @@
 package com.example.reduxserverspring.counters;
 
-public record Counter(int index, int value) {
+import jakarta.validation.constraints.Min;
+
+public record Counter(@Min(0) int index, int value) {
 }
