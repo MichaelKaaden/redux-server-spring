@@ -90,7 +90,7 @@ public class CountersController {
     }
 
     @PutMapping("/counters/{index}")
-    @Operation(summary = "Set a specific counter. Use with great care in a concurrently updated environment!",
+    @Operation(summary = "Set a specific counter. Use with great care in a distributed environment!",
             responses = {
                     @ApiResponse(responseCode = "200",
                             content = @Content(examples = {
