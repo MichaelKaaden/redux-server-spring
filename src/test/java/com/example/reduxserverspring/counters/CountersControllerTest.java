@@ -7,7 +7,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.Arrays;
 
@@ -57,7 +56,6 @@ class CountersControllerTest {
     @Test
     void testGetCounterWithInvalidIndex() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get("/counters/-1"))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").isArray())
                 .andExpect(jsonPath("$.errors[0]").value("must be greater than or equal to 0"));
@@ -112,7 +110,6 @@ class CountersControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"by\": 1 }")
                 )
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status").value(200))
@@ -153,7 +150,6 @@ class CountersControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"by\": 1 }")
                 )
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status").value(200))
