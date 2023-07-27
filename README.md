@@ -1,5 +1,9 @@
 # Redux Server (Spring Boot Edition)
 
+[![GitHub last commit](https://img.shields.io/github/last-commit/MichaelKaaden/redux-server-spring.svg)](https://github.com/MichaelKaaden/redux-server-spring/commits/master)
+[![GitHub issues](https://img.shields.io/github/issues/MichaelKaaden/redux-server-spring.svg)](https://github.com/MichaelKaaden/redux-server-spring/issues)
+[![license](https://img.shields.io/github/license/MichaelKaaden/redux-server-spring.svg)](https://github.com/MichaelKaaden/redux-server-spring)
+
 This is a tiny REST service managing counters. The counters
 are kept in memory, so they are reset every time you restart
 the service.
