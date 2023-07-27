@@ -1,6 +1,5 @@
 package com.example.reduxserverspring.counters;
 
-import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -12,7 +11,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -58,9 +56,11 @@ class CountersControllerTest {
 
     @Test
     void testGetCounterWithInvalidIndex() throws Exception {
-        assertThrows(ServletException.class, () -> {
-            this.mockMvc.perform(MockMvcRequestBuilders.get("/counters/-1"));
-        });
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/counters/-1"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[0]").value("must be greater than or equal to 0"));
     }
 
     @Test
@@ -81,22 +81,27 @@ class CountersControllerTest {
 
     @Test
     void testPutCounterWithInvalidIndex() throws Exception {
-        assertThrows(ServletException.class, () -> {
-            this.mockMvc.perform(MockMvcRequestBuilders
-                    .put("/counters/-1")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{ \"count\": 10 }")
-            );
-        });
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/counters/-1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"count\": 10 }")
+
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[0]").value("must be greater than or equal to 0"));
     }
 
     @Test
     void testPutCounterWithInvalidCount() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders
-                .put("/counters/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{ \"count\": -1 }")
-        ).andExpect(status().isBadRequest()); // TODO I had expected an Exception like above
+                        .put("/counters/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"count\": -1 }")
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[0]").value("must be greater than or equal to 0"));
     }
 
     @Test
@@ -118,22 +123,26 @@ class CountersControllerTest {
 
     @Test
     void testDecrementCounterWithInvalidIndex() throws Exception {
-        assertThrows(ServletException.class, () -> {
-            this.mockMvc.perform(MockMvcRequestBuilders
-                    .put("/counters/-1/decrement")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{ \"by\": 10 }")
-            );
-        });
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/counters/-1/decrement")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"by\": 10 }")
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[0]").value("must be greater than or equal to 0"));
     }
 
     @Test
     void testDecrementCounterWithInvalidCount() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders
-                .put("/counters/1/decrement")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{ \"by\": -1 }")
-        ).andExpect(status().isBadRequest()); // TODO I had expected an Exception like above
+                        .put("/counters/1/decrement")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"by\": -1 }")
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[0]").value("must be greater than or equal to 1"));
     }
 
     @Test
@@ -155,21 +164,25 @@ class CountersControllerTest {
 
     @Test
     void testIncrementCounterWithInvalidIndex() throws Exception {
-        assertThrows(ServletException.class, () -> {
-            this.mockMvc.perform(MockMvcRequestBuilders
-                    .put("/counters/-1/increment")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{ \"by\": 10 }")
-            );
-        });
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .put("/counters/-1/increment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"by\": 10 }")
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[0]").value("must be greater than or equal to 0"));
     }
 
     @Test
-    void testInrementCounterWithInvalidCount() throws Exception {
+    void testIncrementCounterWithInvalidCount() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders
-                .put("/counters/1/increment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{ \"by\": -1 }")
-        ).andExpect(status().isBadRequest()); // TODO I had expected an Exception like above
+                        .put("/counters/1/increment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"by\": -1 }")
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors[0]").value("must be greater than or equal to 1"));
     }
 }
