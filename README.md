@@ -48,6 +48,16 @@ $ ./gradlew jacocoTestReport
 
 As usual, you'll find the HTML report in the directory `build/reports/jacoco/test`.
 
+## Building and Running the Docker Image
+
+```bash
+$ ./gradlew build
+$ docker build -t myorg/redux-server-spring .
+$ docker run -p 3000:3000 myorg/redux-server-spring
+```
+
+On my Mac, the image size is 433 MB, the container uses 228 MB RAM.
+
 ## Alternative and Corresponding Implementations
 
 This is only one possible solution to this kind of problem.
