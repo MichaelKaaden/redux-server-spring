@@ -53,10 +53,23 @@ As usual, you'll find the HTML report in the directory `build/reports/jacoco/tes
 ```bash
 $ ./gradlew build
 $ docker build -t myorg/redux-server-spring .
-$ docker run -p 3000:3000 myorg/redux-server-spring
+$ docker run --rm -p 3000:3000 myorg/redux-server-spring
 ```
 
 On my Mac, the image size is 433 MB, the container uses 228 MB RAM.
+
+### Building and Running a Native Image
+
+To build a native image, you have to have GraalVM installed, the environment variable `GRAALVM_HOME` set and Docker
+(or something compatible like Rancher Desktop) running on your host. For details, please see
+the [documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html).
+
+```bash
+$ ./gradlew bootBuildImage
+$ docker run --rm -p 3000:3000 docker.io/library/redux-server-spring:0.0.1-SNAPSHOT
+```
+
+On my Mac, the image size is 129 MB, the container uses 146 MB RAM.
 
 ## Alternative and Corresponding Implementations
 
